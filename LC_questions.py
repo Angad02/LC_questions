@@ -1004,3 +1004,96 @@ class Solution:
             self.res = [temp_sum/temp_num, root.val]
         
         return [temp_sum, temp_num]
+
+
+# Point of Lattice
+############ JAVA SOlution ##################
+# int[] lattice(int ax, int ay, int bx, int by) {
+#         int dx = bx - ax, dy = by - ay;
+
+#         // rotate 90
+#         int rx = dy, ry = -dx;
+
+#         // reduce
+#         int gcd = Math.abs(gcd(rx, ry));
+#         rx /= gcd;
+#         ry /= gcd;
+        
+#         return new int[]{bx + rx, by + ry};
+#     }
+
+#     private int gcd(int x, int y) {
+#         return y == 0 ? x : gcd(y, x % y);
+#     }
+
+
+# Merge Intervals
+
+class Solution:
+    def merge(self, intervals):
+        intervals.sort(key=lambda x: x.start)
+
+        merged = []
+        for interval in intervals:
+            # if the list of merged intervals is empty or if the current
+            # interval does not overlap with the previous, simply append it.
+            if not merged or merged[-1].end < interval.start:
+                merged.append(interval)
+            else:
+            # otherwise, there is overlap, so we merge the current and previous
+            # intervals.
+                merged[-1].end = max(merged[-1].end, interval.end)
+
+        return merged
+
+# Roll Dice
+
+import math
+A = [1,6,2,3]
+def rollDice(A):
+    count = [0] * 7
+    for i in A:
+        count[i] += 1
+    min_r = math.inf
+    for i in range(1,7):
+        rotate = sum(count) - count[i] + count[7-i]
+        if rotate < min_r:
+            min_r = rotate
+    return min_r
+rollDice(A)
+
+# Longest string without 3 consecutive characters
+
+from heapq import heappush, heappop, heapreplace
+def ls3(count):
+    pq, ban, ans = [], '-', '-'
+    for k, v in zip(string.ascii_lowercase, count):
+        heapq.heappush(pq, (-v, k))
+    while pq:
+        v, k = heapq.heappop(pq)
+        if k == ban:
+            if not pq: break
+            v, k = heapreplace(pq, (v, k))
+        ban = k if k == ans[-1] else '-'
+        ans += k
+        if v != -1:
+            heapq.heappush(pq, (v + 1, k))
+    return ans[1:]
+
+# Longest string made up of only vowels
+
+def longestVowelsOnlySubstring(S):
+    temp, aux, vowels = 0, [], set('aeiou')
+    # Count the length of each vowel substring
+    for c in S + 'z':
+        if c in vowels:
+            temp += 1
+        elif temp:
+            aux.append(temp)
+            temp = 0
+    # If the first letter is not vowel, you must cut the head
+    if S[0] not in vowels: aux = [0] + aux
+    # If the last letter is not vowel, you must cut the tail
+    if S[-1] not in vowels: aux += [0]
+    # Max length = max head + max tail + max middle
+    return aux[0] + aux[-1] + max(aux[1:-1]) if len(aux) >= 3 else sum(aux)
