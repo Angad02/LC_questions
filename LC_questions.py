@@ -1097,3 +1097,632 @@ def longestVowelsOnlySubstring(S):
     if S[-1] not in vowels: aux += [0]
     # Max length = max head + max tail + max middle
     return aux[0] + aux[-1] + max(aux[1:-1]) if len(aux) >= 3 else sum(aux)
+
+
+    ##################### CTCI ############################
+
+    ###################### TREES ##########################
+
+    # 4.12 Path Sum III
+    class Solution:
+    def dfs(self, node, prev_vals, target):
+        if node is None:
+            return 
+        curr_vals = [prev_val + node.val for prev_val in prev_vals] + [node.val]
+        
+        for curr_val in curr_vals:
+            if curr_val == target:
+                self.res +=1
+        self.dfs(node.left, curr_vals, target)
+        self.dfs(node.right, curr_vals, target)
+        
+    def pathSum(self, root: TreeNode, sum: int) -> int:
+        self.res = 0
+		
+        self.dfs(root, [], sum)
+        
+        return self.res
+
+ #4.11  Insert into a Binary Search Tree
+class Solution:
+    def insertIntoBST(self, root: TreeNode, val: int) -> TreeNode:
+        start = root
+        if root is None:
+            return
+        node = TreeNode(val)
+        while True:
+            if val<start.val:
+                if not start.left:
+                    # add new node
+                    start.left = node
+                    return root
+                start = start.left
+            if val>start.val:
+                if not start.right:
+                    # add new node
+                    start.right = node
+                    return root
+                start = start.right
+        
+    #  1. Node to be deleted is leaf: Simply remove from the tree.
+    #  2. Node to be deleted has only one child: Copy the child to the node and delete the child
+    #  3. Node to be deleted has two children: Find inorder successor of the node. Copy contents of the inorder successor
+    #  to the node and delete the inorder successor. Note that inorder predecessor can also be used.  
+    def deleteaNodeBST(self, root, val):
+        if root is None:
+            return root
+        if key<root.val:
+            self.deleteaNodeBST(root.left, val)
+        elif key>root.val:
+            self.deleteaNodeBST(root.right, val)
+        else:
+            if root.left is None:
+                temp = root.right
+                root = None
+                return temp
+            elif root.right is None:
+                temp = root.left
+                root = None
+                return temp
+
+            temp = minValueNode(root.right)
+            root.key = temp.key
+            root.right = self.deleteaNodeBST(root,.right temp.val)
+        return root
+
+    def searchBST(self, root, key):
+        if root is None or root.key == key:
+            return root
+        if root.key>key:
+            self.searchBST(root.left, key)
+        else:
+            self.searchBST(root.right, key)
+
+
+# Python3 program to Select a  
+# Random Node from a tree 
+from random import randint 
+  
+class Node: 
+      
+    def __init__(self, data): 
+        self.data = data 
+        self.children = 0
+        self.left = None
+        self.right = None
+  
+# This is used to fill children counts.  
+def getElements(root):  
+  
+    if root == None:  
+        return 0
+          
+    return (getElements(root.left) +
+            getElements(root.right) + 1)  
+  
+# Inserts Children count for each node  
+def insertChildrenCount(root):  
+  
+    if root == None: 
+        return
+  
+    root.children = getElements(root) - 1
+    insertChildrenCount(root.left)  
+    insertChildrenCount(root.right)  
+  
+# Returns number of children for root  
+def children(root): 
+  
+    if root == None:  
+        return 0
+    return root.children + 1
+  
+# Helper Function to return a random node  
+def randomNodeUtil(root, count):  
+  
+    if root == None:  
+        return 0
+  
+    if count == children(root.left):  
+        return root.data  
+  
+    if count < children(root.left):  
+        return randomNodeUtil(root.left, count)  
+  
+    return randomNodeUtil(root.right,  
+            count - children(root.left) - 1)  
+  
+# Returns Random node  
+def randomNode(root):  
+  
+    count = randint(0, root.children)  
+    return randomNodeUtil(root, count) 
+  
+# Driver Code 
+if __name__ == "__main__": 
+  
+    # Creating Above Tree  
+    root = Node(10)  
+    root.left = Node(20)  
+    root.right = Node(30)  
+    root.left.right = Node(40)  
+    root.left.right = Node(50)  
+    root.right.left = Node(60)  
+    root.right.right = Node(70)  
+  
+    insertChildrenCount(root)  
+  
+    print("A Random Node From Tree :", 
+           randomNode(root))
+
+class Solution:
+    def equals(self, tree1, tree2):
+        if tree1 is None and tree2 is None:
+            return True
+        if tree1 is None or tree2 is None:
+            return False
+        return tree1.val == tree2.val and self.equals(tree1.left,tree1.left) and self.equals(tree1.right,tree2.right)
+
+    def traverse(self, tree1, tree2):
+        if tree2 is not None:
+            return self.equals(tree1, tree2) or self.traverse(tree1.left, tree2) or self.traverse(tree1.right, tree2)
+
+    def isSubtree(self, tree1, tree2):
+        return traverse(tree1, tree2)
+
+
+def weave(prefix, subtree5, subtree20, results):
+  if not len(subtree5) or not len(subtree20):
+    # One of the lists is empty, so join!
+    results.append(prefix + subtree5 + subtree20)
+    return results
+  # Move leftmost item into prefix.
+  head_subtree5 = subtree5.pop(0)
+  prefix.append(head_subtree5)
+  weave(prefix, subtree5, subtree20, results)
+  # Return rightmost item to subtree5.
+  prefix.pop()
+  subtree5.insert(0, head_subtree5)
+  # Move leftmost item into prefix.
+  head_subtree20 = subtree20.pop(0)
+  prefix.append(head_subtree20)
+  weave(prefix, subtree5, subtree20, results)
+  # Return rightmost item to subtree20.
+  prefix.pop()
+  subtree20.insert(0, head_subtree20)
+if __name__ == "__main__":
+  results = []
+  weave_([], [5, 2], [20, 30], results)
+  print(results)
+
+
+# This function returns pointer to LCA of two given 
+# values n1 and n2 
+# This function assumes that n1 and n2 are present in 
+# Binary Tree 
+def findLCA(root, n1, n2): 
+      
+    # Base Case 
+    if root is None: 
+        return None
+  
+    # If either n1 or n2 matches with root's key, report 
+    #  the presence by returning root (Note that if a key is 
+    #  ancestor of other, then the ancestor key becomes LCA 
+    if root.key == n1 or root.key == n2: 
+        return root  
+  
+    # Look for keys in left and right subtrees 
+    left_lca = findLCA(root.left, n1, n2)  
+    right_lca = findLCA(root.right, n1, n2) 
+  
+    # If both of the above calls return Non-NULL, then one key 
+    # is present in once subtree and other is present in other, 
+    # So this node is the LCA 
+    if left_lca and right_lca: 
+        return root  
+  
+    # Otherwise check if left subtree or right subtree is LCA 
+    return left_lca if left_lca is not None else right_lca 
+
+# Build order - topological sort
+
+# Inorder Predecessor
+# This function finds predecessor and successor of key in BST 
+# It sets pre and suc as predecessor and successor respectively 
+# A BST node 
+class Node: 
+  
+    # Constructor to create a new node 
+    def __init__(self, key): 
+        self.key  = key 
+        self.left = None
+        self.right = None
+  
+# This function finds predecessor and successor of key in BST 
+# It sets pre and suc as predecessor and successor respectively 
+def findPreSucHelper(root, key):
+    
+    # Base Case 
+    if root is None:
+        return 
+    
+    # If key is present at root
+    if root.key = key:
+    
+        # the maximum value in left subtree is predecessor 
+        if root.left is not None:
+            tmp = root.left
+            while(tmp.right):
+                tmp = tmp.right
+            findPreSucHelper.pre = tmp
+            
+        # the minimum value in right subtree is successor 
+        if root.right is not None:
+            tmp = root.right
+            while(tmp.left):
+                tmp = tmp.left
+            findPreSucHelper.suc = tmp
+            
+    # If key is smaller than root's key, go to left subtree
+    if root.key<key:
+        findPreSucHelper.pre = root
+        findPreSucHelper(root.right, key)
+        
+    else: # go to right subtree 
+        findPreSucHelper.suc = root
+        findPreSucHelper(root.left, key)
+
+def findPreSuc(root, key):
+    findPreSuc.pre = None
+    findPreSuc.suc = None
+    findPreSucHelper(root, key)
+    print('Value of Predecessor: ', findPreSuc.pre.key)
+    print('Value of Successor: ', findPreSuc.suc.key)
+
+
+# validate BST
+    class Solution:
+    def isValidBST(self, root):
+        """
+        :type root: TreeNode
+        :rtype: bool
+        """
+        def helper(node, lower = float('-inf'), upper = float('inf')):
+            if not node:
+                return True
+            
+            val = node.val
+            if val <= lower or val >= upper:
+                return False
+
+            if not helper(node.right, val, upper):
+                return False
+            if not helper(node.left, lower, val):
+                return False
+            return True
+
+        return helper(root)
+
+# Check if a Binary Tree is balanced: O(n^2) as the height function is linear and is called for every node
+    #1. check if the balance factor is <= 1
+    #2. check if every left subtree is balanced
+    #3. check if every right subtree is balanced
+    
+def is_balanced(node):
+    #return true as an empty tree is balanced
+    if node == None:
+        return True
+    # get the heights of the subtrees
+    ltree = height(node.left)
+    rtree = height(node.right)
+    
+    if abs(rtree - ltree)<=1 and is_balanced(node.left) and is_balanced(node.right):
+        return True
+    return False
+    
+def height(node):
+    if node == None:
+        return -1
+    l_h = height(node.left)
+    r_h = height(node.right)
+    
+    return max(l_h,r_h) + 1
+
+
+# 1) Get the Middle of the array and make it root.
+# 2) Recursively do same for left half and right half.
+#       a) Get the middle of left half and make it left child of the root
+#           created in step 1.
+#       b) Get the middle of right half and make it right child of the
+#           root created in step 1.
+
+    # input : sorted array of integers 
+# output: root node of balanced BST 
+def sortedArrayToBST(arr): 
+      
+    if not arr: 
+        return None
+  
+    # find middle 
+    mid = (len(arr)) / 2
+      
+    # make the middle element the root 
+    root = Node(arr[mid]) 
+      
+    # left subtree of root has all 
+    # values <arr[mid] 
+    root.left = sortedArrayToBST(arr[:mid]) 
+      
+    # right subtree of root has all  
+    # values >arr[mid] 
+    root.right = sortedArrayToBST(arr[mid+1:]) 
+    return root 
+
+
+
+# program to check if there is exist a path between two vertices 
+# of a graph 
+  
+from collections import defaultdict 
+   
+#This class represents a directed graph using adjacency list representation 
+class Graph: 
+   
+    def __init__(self,vertices): 
+        self.V= vertices #No. of vertices 
+        self.graph = defaultdict(list) # default dictionary to store graph 
+   
+    # function to add an edge to graph 
+    def addEdge(self,u,v): 
+        self.graph[u].append(v) 
+       
+     # Use BFS to check path between s and d 
+    def isReachable(self, s, d): 
+        # Mark all the vertices as not visited 
+        visited =[False]*(self.V) 
+   
+        # Create a queue for BFS 
+        queue=[] 
+   
+        # Mark the source node as visited and enqueue it 
+        queue.append(s) 
+        visited[s] = True
+   
+        while queue: 
+  
+            #Dequeue a vertex from queue  
+            n = queue.pop(0) 
+              
+            # If this adjacent node is the destination node, 
+            # then return true 
+             if n == d: 
+                 return True
+  
+            #  Else, continue to do BFS 
+            for i in self.graph[n]: 
+                if visited[i] == False: 
+                    queue.append(i) 
+                    visited[i] = True
+         # If BFS is complete without visited d 
+         return False
+   
+
+   class LinkedList:
+	next = None
+	val = None
+
+	def __init__(self, val):
+		self.val = val
+
+	def add(self, val):
+		if self.next == None:
+			self.next = LinkedList(val)
+		else:
+			self.next.add(val)
+
+	def __str__(self):
+		return "({val}) ".format(val=self.val) + str(self.next)
+
+class BinaryTree:
+	val = None
+	left = None
+	right = None
+	
+	def __init__(self, val):
+		self.val = val
+
+	def __str__(self):
+		return "<Binary Tree (val is {val}). \n\tleft is {left} \n\tright is {right}>".format(val=self.val, left=self.left, right=self.right)
+
+def depth(tree):
+	if tree == None:
+		return 0
+	if tree.left == None and tree.right == None:
+		return 1
+	else:
+		depthLeft = 1+depth(tree.left)
+		depthRight = 1+depth(tree.right)
+		if depthLeft > depthRight:
+			return depthLeft
+		else:
+			return depthRight
+
+def tree_to_linked_lists(tree, lists={}, d=None):
+	if d == None:
+		d = depth(tree)
+	if lists.get(d) == None:
+		lists[d] = LinkedList(tree.val)
+	else:
+		lists[d].add(tree.val)
+		if d == 1:
+			return lists
+	if tree.left != None:
+		lists = tree_to_linked_lists(tree.left, lists, d-1)
+	if tree.right != None:
+		lists = tree_to_linked_lists(tree.right, lists, d-1)
+	return lists
+
+if __name__ == '__main__':
+	mainTree = BinaryTree(1)
+	someSubTrees = {"left": BinaryTree(2), "right": BinaryTree(3)}
+	someSubTrees["left"].left = BinaryTree(4)
+	someSubTrees["left"].right = BinaryTree(5)
+	someSubTrees["right"].left = BinaryTree(6)
+	someSubTrees["right"].right = BinaryTree(7)
+	someSubTrees["right"].right.right = BinaryTree(8)
+	someSubTrees["left"].left.left = BinaryTree(9)
+	mainTree.left = someSubTrees["left"]
+	mainTree.right = someSubTrees["right"]
+	ttll = tree_to_linked_lists(mainTree)
+	for depthLevel, linkedList in ttll.iteritems():
+		print "{0} {1}".format(depthLevel, linkedList)
+
+
+# Returns the best obtainable price for a rod of length n and 
+# price[] as prices of different pieces 
+def cutRod(price, n): 
+    val = [0 for x in range(n+1)] 
+    val[0] = 0
+  
+    # Build the table val[] in bottom up manner and return 
+    # the last entry from the table 
+    for i in range(1, n+1): 
+        max_val = INT_MIN 
+        for j in range(i): 
+             max_val = max(max_val, price[j] + val[i-j-1]) 
+        val[i] = max_val 
+  
+    return val[n] 
+
+
+class Codec:
+
+    def serialize(self, root):
+        """Encodes a tree to a single string.
+        :type root: TreeNode
+        :rtype: str
+        """
+        vals = []
+        def preOrder(root):
+            if root:
+                vals.append(root.val)
+                preOrder(root.left)
+                preOrder(root.right)
+        preOrder(root)
+        return ' '.join(map(str, vals))
+
+
+    def deserialize(self, data):
+        """Decodes your encoded data to tree.
+        :type data: str
+        :rtype: TreeNode
+        """
+        vals = collections.deque(int(val) for val in data.split())
+        def build(minVal, maxVal):
+            if vals and minVal < vals[0] < maxVal:
+                val = vals.popleft()
+                root = TreeNode(val)
+                root.left = build(minVal, val)
+                root.right = build(val, maxVal)
+                return root
+        return build(float('-inf'), float('inf'))
+
+# Your Codec object will be instantiated and called as such:
+# codec = Codec()
+# codec.deserialize(codec.serialize(root))
+
+
+# bit manipulation 
+# 1) Get all even bits of x by doing bitwise and of x with 0xAAAAAAAA. The number 0xAAAAAAAA is a 32 bit number with all even bits set as 1 and all odd bits as 0.
+# 2) Get all odd bits of x by doing bitwise and of x with 0x55555555. The number 0x55555555 is a 32 bit number with all odd bits set as 1 and all even bits as 0.
+# 3) Right shift all even bits.
+# 4) Left shift all odd bits.
+# 5) Combine new even and odd bits and return
+def swapBits(x) : 
+      
+    # Get all even bits of x 
+    even_bits = x & 0xAAAAAAAA
+  
+    # Get all odd bits of x 
+    odd_bits = x & 0x55555555
+      
+    # Right shift even bits 
+    even_bits >>= 1
+      
+    # Left shift odd bits 
+    odd_bits <<= 1 
+  
+    # Combine even and odd bits 
+    return (even_bits | odd_bits)  
+  
+
+# 1. Calculate XOR of A and B.      
+#         a_xor_b = A ^ B
+#   2. Count the set bits in the above 
+#      calculated XOR result.
+def countSetBits( n ): 
+    count = 0
+    while n: 
+        count += n & 1
+        n >>= 1
+    return count 
+      
+#         countSetBits(a_xor_b)
+# Function that return count of 
+# flipped number 
+def FlippedCount(a , b): 
+  
+    # Return count of set bits in 
+    # a XOR b 
+    return countSetBits(a^b) 
+  
+# Driver code 
+a = 10
+b = 20
+print(FlippedCount(a, b)) 
+
+
+def toBinary(n): 
+  
+    # Check if the number is Between 0 to 1 or Not 
+    if(n >= 1 or n <= 0): 
+        return "ERROR"
+  
+    answer = "" 
+    frac = 0.5
+    answer = answer + "."
+  
+    # Setting a limit on length: 32 characters. 
+    while(n > 0): 
+  
+        # Setting a limit on length: 32 characters 
+        if(len(answer) >= 32): 
+            return "ERROR"
+  
+        # Multiply n by 2 to check it 1 or 0 
+        b = n * 2
+        if (b >= 1): 
+  
+            answer = answer + "1"
+            n = b - 1
+  
+        else: 
+            answer = answer + "0"
+            n = b 
+  
+    return answer 
+
+
+
+    # DP 
+Box stacking: https://www.geeksforgeeks.org/box-stacking-problem-dp-22/
+Triple steps: https://www.geeksforgeeks.org/count-ways-reach-nth-stair-using-step-1-2-3/
+8 queen: https://www.geeksforgeeks.org/n-queen-problem-backtracking-3/
+Coin change: https://www.geeksforgeeks.org/find-minimum-number-of-coins-that-make-a-change/
+Tower of Hanoi: https://www.geeksforgeeks.org/c-program-for-tower-of-hanoi/
+Parens: https://www.geeksforgeeks.org/print-all-combinations-of-balanced-parentheses/
+magic index : https://www.geeksforgeeks.org/magical-indices-array/
+paren: https://www.geeksforgeeks.org/print-all-combinations-of-balanced-parentheses/
+PERMUTATION WITH DUPS: https://www.geeksforgeeks.org/distinct-permutations-string-set-2/
+PAINT FILL/FLOOD FILL: https://www.geeksforgeeks.org/flood-fill-algorithm-implement-fill-paint/
